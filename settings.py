@@ -9,7 +9,7 @@ grid = {
     "price_lower": None,       # None = 当前价 × 0.95
     "price_upper": None,       # None = 当前价 × 1.05
     "grid_count": 31,          # 层级数
-    "amount_per_order": None,  # None = 最小交易量
+    "amount_per_order": None,  # None = 交易所最小币种数量
 }
 
 # ============================================================
