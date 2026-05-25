@@ -2,14 +2,14 @@
 #  手动设置区
 # ============================================================
 active = "HYPE"
-budget = 1000
+budget = 2000
 
 # 网格参数（为 None 的项启动时自动从链上计算）
 grid = {
-    "price_lower": None,       # None = 当前价 × 0.95
-    "price_upper": None,       # None = 当前价 × 1.05
-    "grid_count": 31,          # 层级数
-    "amount_per_order": None,  # None = 交易所最小币种数量
+    "price_lower": 50,       # None = 当前价 × 0.95
+    "price_upper": 70,       # None = 当前价 × 1.05
+    "grid_count": 40,          # 层级数
+    "amount_per_order": 0.5,  # None = 交易所最小币种数量
 }
 
 # ============================================================
