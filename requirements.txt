@@ -1,0 +1,4 @@
+aiohttp==3.13.5
+aiohttp-retry==2.9.1
+lighter-sdk @ git+https://github.com/elliottech/lighter-python.git@ed7e3d0962a9ed88cc760e4cf0214680da6fb264
+python-dotenv==1.2.2

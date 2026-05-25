@@ -1,0 +1,11 @@
+[project]
+name = "lighter-grid"
+version = "0.1.0"
+description = "Classic long grid trading bot for Lighter DEX"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.9",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "lighter-sdk @ git+https://github.com/elliottech/lighter-python.git",
+]
