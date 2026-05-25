@@ -18,7 +18,11 @@ async def main():
     import settings
     print(f"启动: {settings.active} budget={settings.budget}...")
     import subprocess
-    subprocess.run([sys.executable, "generate_grid.py"], check=True)
+    try:
+        subprocess.run([sys.executable, "generate_grid.py"], check=True)
+    except subprocess.CalledProcessError:
+        print("网格生成失败, 退出")
+        return
     with open("data/grid_setting.json") as f:
         gs = json.load(f)
     print(f"网格: {gs['symbol']} {gs['grid_count']}层 [{gs['price_lower']:.0f}-{gs['price_upper']:.0f}] "
