@@ -8,43 +8,49 @@ Classic long grid trading bot for [Lighter DEX](https://lighter.xyz) on Arbitrum
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
-# Copy and edit env
 cp .env.example .env
-# Fill in your Lighter private key and account index
+# Edit .env — fill in your Lighter private key and account index
 
-# Adjust grid config (optional)
-vim config/btc_long.yaml
-
-# Run
 python main_loop.py
 ```
+
+## Configuration
+
+All config in `settings.py`:
+
+```python
+active = "BTC"          # trading pair
+budget = 1000           # initial capital (USD)
+
+grid = {
+    "price_lower": None,        # None = auto (current × 0.95)
+    "price_upper": None,        # None = auto (current × 1.05)
+    "grid_count": 31,           # number of levels
+    "amount_per_order": None,   # None = exchange minimum
+}
+```
+
+Change `active` to switch coins. Grid parameters auto-calculate if left `None`.  
+Validation at startup: lower < upper, amount ≥ exchange minimum, max capital ≤ budget.
 
 ## Architecture
 
 ```
-main_loop.py        — main loop: fetch market → process buys → process sells
-lib.py              — shared logic: chain queries, order placement, precision
-generate_grid.py    — one-time grid table generator from config
-config/btc_long.yaml — grid parameters (range, levels, amount)
+main_loop.py          — main loop: fetch market → process buys → process sells
+lib.py                — shared logic: chain queries, order placement, precision
+generate_grid.py      — grid table generator from settings.py
+settings.py           — all configuration in one place
 ```
 
 Each cycle (10s):
-1. Fetch current BBA → determine buy/sell zones
+1. Fetch BBA → determine buy/sell zones around closest grid level
 2. Fetch chain state (positions + active orders)
-3. Cancel stray orders not matching grid levels
-4. Fill missing buy orders in buy zone (skip if upper level has sell)
+3. Cancel orders not matching any grid level
+4. Fill missing buy orders (skip if upper level has sell)
 5. Fill missing sell orders matching position (cancel excess if oversold)
 
-## Config
+## Files
 
-```yaml
-symbol: BTC
-market_id: 1
-price_lower: 76000.0
-price_upper: 78000.0
-grid_count: 20          # number of intervals (levels = grid_count + 1)
-amount_per_order: 0.0002
-```
-
-Grid is generated once at startup from config values. Same config always produces the same grid.
+- `data/grid_setting.json` — computed grid price table
+- `data/debug.jsonl` — per-cycle debug data  
+- `data/equity.jsonl` — hourly equity snapshots
