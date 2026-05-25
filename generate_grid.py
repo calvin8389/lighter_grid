@@ -58,13 +58,14 @@ async def main():
         upper = float((Decimal(str(upper)) / t).to_integral_value(rounding=ROUND_CEILING) * t)
 
     # 每单量
-    amt = g.get("amount_per_order") or None
-    if amt is None:
+    user_amt = g.get("amount_per_order")  # None 或用户设置值
+    if user_amt is None:
         amt = float((Decimal(str(min_base)) / s).to_integral_value(rounding=ROUND_CEILING) * s)
     else:
-        amt = float((Decimal(str(amt)) / s).to_integral_value(rounding=ROUND_DOWN) * s)
-    if amt < min_base:
-        amt = float((Decimal(str(min_base)) / s).to_integral_value(rounding=ROUND_CEILING) * s)
+        amt = float((Decimal(str(user_amt)) / s).to_integral_value(rounding=ROUND_DOWN) * s)
+        if amt < min_base:
+            print(f"ERROR: amount_per_order={user_amt} < 交易所最小 {min_base}")
+            sys.exit(1)
     if amt * lower < min_quote:
         amt = float((Decimal(str(min_quote / lower)) / s).to_integral_value(rounding=ROUND_CEILING) * s)
     amt = float((Decimal(str(amt)) / s).to_integral_value(rounding=ROUND_DOWN) * s)
