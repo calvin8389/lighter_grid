@@ -70,9 +70,19 @@ async def main():
         amt = float((Decimal(str(min_quote / lower)) / s).to_integral_value(rounding=ROUND_CEILING) * s)
     amt = float((Decimal(str(amt)) / s).to_integral_value(rounding=ROUND_DOWN) * s)
 
-    # 层数
+    # ── 参数校验 ──
+    errors = []
+    if lower <= 0: errors.append(f"price_lower={lower} <= 0")
+    if upper <= 0: errors.append(f"price_upper={upper} <= 0")
+    if lower >= upper: errors.append(f"price_lower({lower}) >= price_upper({upper})")
+    if budget <= 0: errors.append(f"budget={budget} <= 0")
+
     n = g.get("grid_count", 20)
-    if n < 3: n = 3
+    if n < 3: errors.append(f"grid_count={n} < 3")
+
+    if errors:
+        for e in errors: print(f"ERROR: {e}")
+        sys.exit(1)
 
     # tick 步长取整
     tick_lo = int(Decimal(str(lower)) / t)
