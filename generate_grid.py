@@ -73,11 +73,6 @@ async def main():
     n = g.get("grid_count", 20)
     if n < 3: n = 3
 
-    # 校验满仓
-    max_cap = n * amt * upper
-    if max_cap > budget * 1.1:
-        print(f"WARN: max_cap=${max_cap:,.0f} > budget=${budget:,.0f}")
-
     # tick 步长取整
     tick_lo = int(Decimal(str(lower)) / t)
     tick_hi = int(Decimal(str(upper)) / t)
@@ -86,6 +81,13 @@ async def main():
     tick_hi_adj = tick_lo + tick_step * (n - 1)
     upper_adj = float(Decimal(str(tick_hi_adj)) * t)
     interval = float(Decimal(str(tick_step)) * t)
+
+    # 校验满仓不超过 budget
+    max_cap = n * amt * upper_adj
+    if max_cap > budget:
+        print(f"ERROR: 满仓需 ${max_cap:,.0f} > 资金 ${budget:,.0f}")
+        print(f"  建议: 减少 grid_count 或 增加 budget")
+        sys.exit(1)
 
     levels = [{"index": i, "price": float(Decimal(str(tick_lo + i * tick_step)) * t)} for i in range(n)]
 
@@ -106,6 +108,6 @@ async def main():
         json.dump(setting, f, indent=2)
 
     print(f"grid: {n}L [{lower:.1f}, {upper_adj:.1f}] interval=${interval:.4f} amt={amt}")
-    print(f"max_cap: ${n * amt * upper_adj:,.0f}  (budget=${budget:,.0f})")
+    print(f"max_cap: ${max_cap:,.0f} / budget=${budget:,.0f}")
 
 asyncio.run(main())
