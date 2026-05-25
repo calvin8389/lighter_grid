@@ -14,8 +14,9 @@ REST = "https://mainnet.zklighter.elliot.ai"
 
 
 async def main():
-    # ── 启动: 01 生成理论基准 ──
-    print("启动: 生成理论网格...")
+    # ── 启动: 生成网格 ──
+    import settings
+    print(f"启动: {settings.active} budget={settings.budget}...")
     import subprocess
     subprocess.run([sys.executable, "generate_grid.py"], check=True)
     with open("data/grid_setting.json") as f:
